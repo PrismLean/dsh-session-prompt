@@ -74,13 +74,33 @@ dsh plugin --profile web add "github:PrismLean/dsh-session-prompt#v0.1.0"
 ## 数据形态
 
 ```jsonc
-// 事件
-{ "type": "sessionPrompt/write", "data": { "text": "..." } }
+// 事件（plugin: 命名空间 + ignorable 标记）
+{ "type": "plugin:dsh-session-prompt/write", "data": { "text": "..." }, "ignorable": true }
 // 投影 state
 { "text": "..." }
 ```
 
 状态只存在于会话事件流里，会话结束即消失，不写任何全局文件。
+
+事件必须经 `appendPluginRecord()` 写入。这不是风格选择：`dsh-session-persistence`
+从磁盘加载会话时，遇到不在内置 62 种类型里的未知事件，若没有 `ignorable: true`
+标记，会**拒绝解释整个日志**，那个会话从此打不开。`appendPluginRecord` 会强制
+`plugin:` 前缀并自动打上该标记，未知读者跳过记录而不是拒绝日志。
+
+**0.1.3 及更早版本用 `session.append()` 写裸类型，会损坏用过它的会话。** 升级到
+0.1.4 后，旧类型的读取仍然兼容（`LEGACY_WRITE_EVENT`/`LEGACY_STAGE_EVENT`），
+但已经写进日志的旧事件需要就地改写：把 `"type":"sessionPrompt/write"` 改成
+`"type":"plugin:dsh-session-prompt/write"` 并补 `"ignorable":true`。
+
+## 从 0.1.3 升级
+
+1. 先停 dsh。
+2. 对每个用过旧版本的会话，检查日志里是否存在 `"type":"sessionPrompt/write"` 或
+   `"type":"sessionPrompt/staged"`；有则改写成 `plugin:dsh-session-prompt/*` 并补
+   `"ignorable":true`（只改 type 和补字段，`data.text` 逐字保留）。
+3. 升级插件到 0.1.4 后重启。
+
+不改写也能恢复：改成 `plugin:` 命名空间即可，0.1.4 的投影同时识别新旧两种 type。
 
 ## 验证
 

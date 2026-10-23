@@ -21,7 +21,15 @@ import {
   initSessionPrompt,
   normalizeText,
   reduceSessionPrompt,
+  recordWriter,
 } from '../lib/index.js';
+
+// Route the real plugin-record channel back through the fake sessions' own
+// `append`, so these tests observe the same `{type, data}` pairs without a
+// live Session. Production uses `appendPluginRecord`, which needs one.
+recordWriter.append = (session, type, data) => {
+  session.append(type, data);
+};
 
 /** Build one session event with the fields the reducer reads. */
 const event = (type, seq, data) => ({ type, seq, data });
