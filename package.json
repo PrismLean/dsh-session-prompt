@@ -1,6 +1,6 @@
 {
   "name": "dsh-session-prompt",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Session-scoped system-prompt injection for DeepSeek Harness: a per-session prompt section the user maintains from the composer, which a top-level agent may also preset for its own subagents",
   "type": "module",
   "main": "./lib/index.js",
