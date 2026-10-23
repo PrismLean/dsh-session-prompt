@@ -1,0 +1,9 @@
+# dsh-session-prompt bundle patch
+#
+# Mount declaration for the session-scoped system-prompt plugin. The plugin
+# registers one `sessionPrompt` session projection, one system-prompt section
+# whose text is read from that projection, the `session_prompt` tool, and the
+# `/session-prompt` slash command the composer overlay submits through.
+- insert:
+    - id: session-prompt
+      name: 'dsh-session-prompt'
