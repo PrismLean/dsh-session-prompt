@@ -2,6 +2,19 @@
 
 会话级系统提示词注入。给你自己一段"只对本会话生效、每轮都在、不会被压缩掉"的约束。
 
+## 安装
+
+```bash
+# 装到 web profile（打 tag 的版本）
+dsh plugin --profile web add "github:PrismLean/dsh-session-prompt#v0.1.0"
+
+# 升级：先 remove 再 add
+dsh plugin --profile web remove dsh-session-prompt
+dsh plugin --profile web add "github:PrismLean/dsh-session-prompt#v0.1.0"
+```
+
+装完重启 `dsh web` 生效。卸载同理，`remove` 后重启。
+
 ## 界面入口
 
 输入框下方工具栏，**「会话权限」控件右侧**有一个按钮（图标 + 文字「提示词」）：
